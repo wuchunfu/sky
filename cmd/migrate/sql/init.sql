@@ -34,6 +34,7 @@ INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_h
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('', '', '', '', '菜单接口管理', '', false, false, false, false, '{system:menu-api:manager}', '', 3, 3, 0, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('', '', '', '', '保存权限', '', false, false, false, false, '{system:role-permission:save}', '', 7, 3, 0, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('', '', '', '', '接口权限管理', '', false, false, false, false, '{system:role-permission-api:manager}', '', 7, 3, 0, now(), now());
+INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('/system/login-log', 'SystemLoginLog', 'system/loginLog/index', '', '登陆日志', '', false, true, false, false, '{system:loginLog}', 'el-icon-postcard', 2, 2, 20, now(), now());
 
 -- API分组
 INSERT INTO system_api_group (name, remark, create_time, update_time) VALUES ('系统管理', '', '2021-09-05 10:25:43.667889 +00:00', '2021-09-05 10:49:02.592078 +00:00');

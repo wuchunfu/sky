@@ -91,7 +91,7 @@ func run() (err error) {
 
 	fmt.Println("\nServer run at:")
 	fmt.Printf("-  Local:   http://localhost:%d/ \r\n", viper.GetInt("server.post"))
-	fmt.Printf("-  Network: http://%s:%d/ \r\n", tools.GetLocaHonst(), viper.GetInt("server.post"))
+	fmt.Printf("-  Network: http://%s:%d/ \r\n", tools.GetLocalHost(), viper.GetInt("server.post"))
 	fmt.Printf("%s Enter Control + C Shutdown Server \r\n\n", time.Now().Format("2006-01-02 15:04:05.000"))
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 

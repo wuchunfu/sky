@@ -2,6 +2,7 @@ package apis
 
 import (
 	"sky/app/system/models"
+	"sky/common/server/loginlog"
 	"sky/pkg/conn"
 	"sky/pkg/jwtauth"
 	"sky/pkg/tools/response"
@@ -47,6 +48,7 @@ func Login(c *gin.Context) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginUser.Password))
 	if err != nil {
+		go loginlog.Create(c, user.Username, "密码不正确")
 		response.Error(c, err, response.IncorrectPasswordError)
 		return
 	}
@@ -56,6 +58,8 @@ func Login(c *gin.Context) {
 		response.Error(c, err, response.GenerateTokenError)
 		return
 	}
+
+	go loginlog.Create(c, user.Username, "登陆成功")
 
 	response.OK(c, token, "")
 }

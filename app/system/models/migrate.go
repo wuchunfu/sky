@@ -8,4 +8,5 @@ var SystemModels = []interface{}{
 	&Api{},
 	&MenuApi{},
 	&ApiGroup{},
+	&LoginLog{},
 }

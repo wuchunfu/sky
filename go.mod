@@ -14,6 +14,7 @@ require (
 	github.com/jackc/pgx/v4 v4.13.0 // indirect
 	github.com/lib/pq v1.10.2
 	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/mssola/user_agent v0.5.3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1

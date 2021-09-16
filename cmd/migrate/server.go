@@ -11,6 +11,7 @@ import (
 
 var (
 	configYml string
+	structure bool
 	StartCmd  = &cobra.Command{
 		Use:          "migrate",
 		Short:        "Synchronous data structure",
@@ -26,7 +27,8 @@ var (
 )
 
 func init() {
-	StartCmd.PersistentFlags().StringVarP(&configYml, "config", "c", "config/settings.yml", "Start server with provided configuration file")
+	StartCmd.PersistentFlags().StringVarP(&configYml, "config", "c", "config/settings.yml", "指定配置文件启动服务")
+	StartCmd.PersistentFlags().BoolVarP(&structure, "structure", "s", false, "仅同步数据结构")
 }
 
 func setup() {
@@ -46,7 +48,7 @@ func setup() {
 
 func run() (err error) {
 	// 同步数据结构
-	AutoMigrate()
+	AutoMigrate(structure)
 
 	// 同步初始数据
 	return
