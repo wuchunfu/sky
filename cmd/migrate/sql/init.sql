@@ -35,6 +35,7 @@ INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_h
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('', '', '', '', '保存权限', '', false, false, false, false, '{system:role-permission:save}', '', 7, 3, 0, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('', '', '', '', '接口权限管理', '', false, false, false, false, '{system:role-permission-api:manager}', '', 7, 3, 0, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('/system/login-log', 'SystemLoginLog', 'system/loginLog/index', '', '登陆日志', '', false, true, false, false, '{system:loginLog}', 'el-icon-postcard', 2, 2, 20, now(), now());
+INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, create_time, update_time) VALUES ('', '', '', '', '删除登陆日志', '', false, false, false, false, '{system:loginLog:delete}', '', 34, 3, 0, now(), now());
 
 -- API分组
 INSERT INTO system_api_group (name, remark, create_time, update_time) VALUES ('系统管理', '', '2021-09-05 10:25:43.667889 +00:00', '2021-09-05 10:49:02.592078 +00:00');
@@ -67,6 +68,8 @@ INSERT INTO system_api (title, url, method, "group", remark, create_time, update
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('接口分组列表', '/api/v1/system/api-group', 'GET', 1, '', now(), now());
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('新建/编辑接口分组', '/api/v1/system/api-group', 'POST', 1, '', now(), now());
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('删除接口分组', '/api/v1/system/api-group/:id', 'DELETE', 1, '', now(), now());
+INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('获取登陆日志列表', '/api/v1/system/login-log', 'GET', 1, '', now(), now());
+INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('删除登陆日志', '/api/v1/system/login-log/:id', 'DELETE', 1, '', now(), now());
 
 -- 菜单与接口的关联
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (4, 6, now(), now());
@@ -100,6 +103,8 @@ INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (7, 18,
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (7, 19, now(), now());
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (7, 20, now(), now());
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (7, 21, now(), now());
+INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (34, 35, now(), now());
+INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (34, 34, now(), now());
 
 COMMIT;
 -- 执行结束

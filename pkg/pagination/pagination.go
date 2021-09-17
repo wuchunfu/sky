@@ -75,11 +75,15 @@ func Paging(p *Param, result interface{}, args ...interface{}) (*Paginator, erro
 		for paramType, paramsValue := range args[0].(map[string]map[string]interface{}) {
 			if paramType == "like" {
 				for key, value := range paramsValue {
-					db = db.Where(fmt.Sprintf("%v%v like ?", tableName, key), fmt.Sprintf("%%%v%%", value))
+					if key != "" {
+						db = db.Where(fmt.Sprintf("%v%v like ?", tableName, key), fmt.Sprintf("%%%v%%", value))
+					}
 				}
 			} else if paramType == "equal" {
 				for key, value := range paramsValue {
-					db = db.Where(fmt.Sprintf("%v%v = ?", tableName, key), value)
+					if key != "" {
+						db = db.Where(fmt.Sprintf("%v%v = ?", tableName, key), value)
+					}
 				}
 			}
 		}
