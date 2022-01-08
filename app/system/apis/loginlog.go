@@ -2,7 +2,7 @@ package apis
 
 import (
 	"sky/app/system/models"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/pagination"
 	"sky/pkg/tools/response"
 
@@ -23,7 +23,7 @@ func LoginLogList(c *gin.Context) {
 
 	result, err = pagination.Paging(&pagination.Param{
 		C:  c,
-		DB: conn.Orm.Model(&models.LoginLog{}),
+		DB: db.Orm.Model(&models.LoginLog{}),
 	}, &list, SearchParams)
 	if err != nil {
 		response.Error(c, err, response.LoginLogListError)
@@ -41,7 +41,7 @@ func DeleteLoginLog(c *gin.Context) {
 
 	loginLogId = c.Param("id")
 
-	err = conn.Orm.Delete(&models.LoginLog{}, loginLogId).Error
+	err = db.Orm.Delete(&models.LoginLog{}, loginLogId).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteLoginLogError)
 		return

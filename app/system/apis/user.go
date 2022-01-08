@@ -3,7 +3,7 @@ package apis
 import (
 	"sky/app/system/models"
 	"sky/common/middleware/permission"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/pagination"
 	"sky/pkg/tools/response"
 
@@ -26,7 +26,7 @@ func UserList(c *gin.Context) {
 
 	result, err = pagination.Paging(&pagination.Param{
 		C:  c,
-		DB: conn.Orm.Model(&models.User{}),
+		DB: db.Orm.Model(&models.User{}),
 	}, &userList, SearchParams)
 	if err != nil {
 		response.Error(c, err, response.UserListError)
@@ -49,7 +49,7 @@ func UserInfo(c *gin.Context) {
 		roleIds []int
 	)
 
-	err = conn.Orm.Model(&models.User{}).Where("username = ?", c.GetString("username")).Scan(&user).Error
+	err = db.Orm.Model(&models.User{}).Where("username = ?", c.GetString("username")).Scan(&user).Error
 	if err != nil {
 		response.Error(c, err, response.GetUserInfoError)
 		return
@@ -66,14 +66,14 @@ func UserInfo(c *gin.Context) {
 
 	if !user.IsAdmin {
 		// 查询角色ID
-		err = conn.Orm.Model(&models.Role{}).Where("key in (?)", user.Role).Pluck("id", &roleIds).Error
+		err = db.Orm.Model(&models.Role{}).Where("key in (?)", user.Role).Pluck("id", &roleIds).Error
 		if err != nil {
 			response.Error(c, err, response.GetRoleError)
 			return
 		}
 
 		// 查询菜单权限
-		err = conn.Orm.Debug().Model(&models.RoleMenu{}).
+		err = db.Orm.Debug().Model(&models.RoleMenu{}).
 			Joins("left join system_menu on system_menu.id = system_role_menu.menu").
 			Select("distinct UNNEST(system_menu.auth) as auth").
 			Where(`system_role_menu.role in (?) and system_role_menu."type" = 1`, roleIds).
@@ -85,7 +85,7 @@ func UserInfo(c *gin.Context) {
 		}
 
 		// 查询按钮权限
-		err = conn.Orm.Debug().Model(&models.RoleMenu{}).
+		err = db.Orm.Debug().Model(&models.RoleMenu{}).
 			Joins("left join system_menu on system_menu.id = system_role_menu.menu").
 			Select("distinct UNNEST(system_menu.auth) as auth").
 			Where(`system_role_menu.role in (?) and system_role_menu."type" = 2`, roleIds).
@@ -113,7 +113,7 @@ func UserInfoById(c *gin.Context) {
 
 	userId = c.Param("id")
 
-	err = conn.Orm.Model(&models.User{}).Where("id = ?", userId).Find(&user).Error
+	err = db.Orm.Model(&models.User{}).Where("id = ?", userId).Find(&user).Error
 	if err != nil {
 		response.Error(c, err, response.GetUserInfoError)
 		return
@@ -148,7 +148,7 @@ func CreateUser(c *gin.Context) {
 	}
 
 	// 判断用户是否存在
-	err = conn.Orm.Model(&models.User{}).Where("username = ?", user.Username).Count(&userCount).Error
+	err = db.Orm.Model(&models.User{}).Where("username = ?", user.Username).Count(&userCount).Error
 	if err != nil {
 		response.Error(c, err, response.QueryUserError)
 		return
@@ -168,7 +168,7 @@ func CreateUser(c *gin.Context) {
 	user.Password = string(password)
 
 	// 创建用户
-	tx := conn.Orm.Begin()
+	tx := db.Orm.Begin()
 	err = tx.Create(&user).Error
 	if err != nil {
 		tx.Rollback()
@@ -215,7 +215,7 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	// 更新用户
-	tx := conn.Orm.Begin()
+	tx := db.Orm.Begin()
 	err = tx.Model(&models.User{}).Omit("password").Where("id = ?", userId).Save(&user).Error
 	if err != nil {
 		tx.Rollback()
@@ -278,7 +278,7 @@ func DeleteUser(c *gin.Context) {
 
 	userId = c.Param("id")
 
-	err = conn.Orm.Model(&models.User{}).Where("id = ?", userId).Find(&user).Error
+	err = db.Orm.Model(&models.User{}).Where("id = ?", userId).Find(&user).Error
 	if err != nil {
 		response.Error(c, err, response.GetUserInfoError)
 		return
@@ -290,7 +290,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Delete(&models.User{}, userId).Error
+	err = db.Orm.Delete(&models.User{}, userId).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteUserError)
 		return

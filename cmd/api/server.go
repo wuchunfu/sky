@@ -10,7 +10,7 @@ import (
 	"sky/common/middleware/permission"
 	"sky/common/router"
 	"sky/pkg/config"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/logger"
 	"sky/pkg/tools"
 	"time"
@@ -52,7 +52,7 @@ func setup() {
 	logger.Setup()
 
 	// 数据库配置
-	conn.Setup()
+	db.Setup()
 
 	// 加载权限配置
 	permission.CasbinSetup()

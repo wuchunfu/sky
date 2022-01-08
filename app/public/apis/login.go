@@ -3,7 +3,7 @@ package apis
 import (
 	"sky/app/system/models"
 	"sky/common/server/loginlog"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/jwtauth"
 	"sky/pkg/tools/response"
 
@@ -30,7 +30,7 @@ func Login(c *gin.Context) {
 	}
 
 	// 查询用户信息
-	err = conn.Orm.Model(&models.User{}).Where("username = ?", loginUser.Username).Find(&user).Error
+	err = db.Orm.Model(&models.User{}).Where("username = ?", loginUser.Username).Find(&user).Error
 	if err != nil {
 		response.Error(c, err, response.QueryUserError)
 		return

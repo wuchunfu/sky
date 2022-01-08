@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sky/app/system/models"
 	"sky/common/middleware/permission"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/pagination"
 	"sky/pkg/tools/response"
 	"strconv"
@@ -27,7 +27,7 @@ func RoleList(c *gin.Context) {
 
 	result, err = pagination.Paging(&pagination.Param{
 		C:  c,
-		DB: conn.Orm.Model(&models.Role{}),
+		DB: db.Orm.Model(&models.Role{}),
 	}, &roleList, SearchParams)
 	if err != nil {
 		response.Error(c, err, response.RoleListError)
@@ -50,12 +50,12 @@ func SaveRole(c *gin.Context) {
 		return
 	}
 
-	db := conn.Orm.Model(&models.Role{})
+	dbModels := db.Orm.Model(&models.Role{})
 
 	if role.Id != 0 {
-		db = db.Where("id = ?", role.Id)
+		dbModels = dbModels.Where("id = ?", role.Id)
 	} else {
-		err = conn.Orm.Model(&models.Role{}).
+		err = db.Orm.Model(&models.Role{}).
 			Where("key = ? or name = ?", role.Key, role.Name).
 			Count(&roleCount).Error
 		if err != nil {
@@ -64,7 +64,7 @@ func SaveRole(c *gin.Context) {
 		}
 	}
 
-	err = db.Save(&role).Error
+	err = dbModels.Save(&role).Error
 	if err != nil {
 		response.Error(c, err, response.SaveRoleError)
 		return
@@ -84,7 +84,7 @@ func DeleteRole(c *gin.Context) {
 
 	roleId = c.Param("id")
 
-	err = conn.Orm.Model(&models.Role{}).Where("id = ?", roleId).Find(&role).Error
+	err = db.Orm.Model(&models.Role{}).Where("id = ?", roleId).Find(&role).Error
 	if err != nil {
 		response.Error(c, err, response.GetRoleError)
 		return
@@ -98,7 +98,7 @@ func DeleteRole(c *gin.Context) {
 	}
 
 	// 获取角色绑定的菜单数据
-	err = conn.Orm.Model(&models.RoleMenu{}).Where("role = ?", roleId).Count(&roleMenuCount).Error
+	err = db.Orm.Model(&models.RoleMenu{}).Where("role = ?", roleId).Count(&roleMenuCount).Error
 	if err != nil {
 		response.Error(c, err, response.GetRoleMenuError)
 		return
@@ -108,7 +108,7 @@ func DeleteRole(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Delete(&models.Role{}, roleId).Error
+	err = db.Orm.Delete(&models.Role{}, roleId).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteRoleError)
 		return
@@ -140,7 +140,7 @@ func UpdateRolePermission(c *gin.Context) {
 	}
 
 	// 查询角色对应的菜单列表
-	err = conn.Orm.Model(&models.RoleMenu{}).Where("role = ?", roleId).Find(&roleMenu).Error
+	err = db.Orm.Model(&models.RoleMenu{}).Where("role = ?", roleId).Find(&roleMenu).Error
 	if err != nil {
 		response.Error(c, err, response.GetRoleMenuError)
 		return
@@ -173,7 +173,7 @@ func UpdateRolePermission(c *gin.Context) {
 		}
 
 		if len(createRoleMenu) > 0 {
-			err = conn.Orm.Model(&models.RoleMenu{}).Create(&createRoleMenu).Error
+			err = db.Orm.Model(&models.RoleMenu{}).Create(&createRoleMenu).Error
 			if err != nil {
 				response.Error(c, err, response.CreateRoleMenuError)
 				return
@@ -186,14 +186,14 @@ func UpdateRolePermission(c *gin.Context) {
 			deleteRoleMenuList = append(deleteRoleMenuList, v)
 		}
 		if len(deleteRoleMenuList) > 0 {
-			err = conn.Orm.Delete(&models.RoleMenu{}, deleteRoleMenuList).Error
+			err = db.Orm.Delete(&models.RoleMenu{}, deleteRoleMenuList).Error
 			if err != nil {
 				response.Error(c, err, response.DeleteRoleMenuError)
 				return
 			}
 		}
 	} else {
-		err = conn.Orm.Model(&models.RoleMenu{}).Create(&newRoleMenu).Error
+		err = db.Orm.Model(&models.RoleMenu{}).Create(&newRoleMenu).Error
 		if err != nil {
 			response.Error(c, err, response.CreateRoleMenuError)
 			return
@@ -220,7 +220,7 @@ func GetRolePermission(c *gin.Context) {
 	roleId = c.Param("id")
 
 	// 查询所有的父级别ID
-	err = conn.Orm.Model(&models.Menu{}).
+	err = db.Orm.Model(&models.Menu{}).
 		Select("distinct parent").
 		Where("parent != 0 and type = 2").
 		Pluck("parent", &parentMenuIds).Error
@@ -230,14 +230,14 @@ func GetRolePermission(c *gin.Context) {
 	}
 
 	// 当前菜单权限
-	err = conn.Orm.Model(&models.RoleMenu{}).Where("role = ? and type = 1 and menu not in (?)", roleId, parentMenuIds).Pluck("menu", &roleMenus).Error
+	err = db.Orm.Model(&models.RoleMenu{}).Where("role = ? and type = 1 and menu not in (?)", roleId, parentMenuIds).Pluck("menu", &roleMenus).Error
 	if err != nil {
 		response.Error(c, err, response.GetRolePermissionError)
 		return
 	}
 
 	// 查询按钮权限
-	err = conn.Orm.Model(&models.RoleMenu{}).
+	err = db.Orm.Model(&models.RoleMenu{}).
 		Joins("left join system_menu on system_menu.id = system_role_menu.menu").
 		Select("system_role_menu.*, system_menu.parent").
 		Where("system_role_menu.role = ? and system_role_menu.type = 2", roleId).Find(&roleMenuButton).Error
@@ -283,14 +283,14 @@ func RoleApiPermission(c *gin.Context) {
 	}
 
 	// 查询角色信息
-	err = conn.Orm.Model(&models.Role{}).Where("id = ?", roleId).Find(&role).Error
+	err = db.Orm.Model(&models.Role{}).Where("id = ?", roleId).Find(&role).Error
 	if err != nil {
 		response.Error(c, err, response.GetRoleError)
 		return
 	}
 
 	// 查询 API 接口
-	err = conn.Orm.Model(&models.Api{}).Where("id in (?)", params.Api).Find(&apis).Error
+	err = db.Orm.Model(&models.Api{}).Where("id in (?)", params.Api).Find(&apis).Error
 	if err != nil {
 		response.Error(c, err, response.GetApiError)
 		return
@@ -336,7 +336,7 @@ func GetRoleApi(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Model(&models.Role{}).Where("id = ?", roleId).Find(&role).Error
+	err = db.Orm.Model(&models.Role{}).Where("id = ?", roleId).Find(&role).Error
 	if err != nil {
 		response.Error(c, err, response.GetRoleError)
 		return
@@ -346,7 +346,7 @@ func GetRoleApi(c *gin.Context) {
 
 	if len(roleApis) > 0 {
 
-		db := conn.Orm.Debug().Model(&models.Api{}).
+		db := db.Orm.Debug().Model(&models.Api{}).
 			Select("system_api.id").
 			Joins("left join system_menu_api on system_menu_api.api = system_api.id")
 

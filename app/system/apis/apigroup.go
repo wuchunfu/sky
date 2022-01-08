@@ -2,7 +2,7 @@ package apis
 
 import (
 	"sky/app/system/models"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/pagination"
 	"sky/pkg/tools/response"
 
@@ -23,7 +23,7 @@ func ApiGroupList(c *gin.Context) {
 
 	result, err = pagination.Paging(&pagination.Param{
 		C:  c,
-		DB: conn.Orm.Model(&models.ApiGroup{}).Order("id"),
+		DB: db.Orm.Model(&models.ApiGroup{}).Order("id"),
 	}, &apiGroupList, SearchParams)
 	if err != nil {
 		response.Error(c, err, response.ApiGroupListError)
@@ -46,12 +46,12 @@ func SaveApiGroup(c *gin.Context) {
 		return
 	}
 
-	db := conn.Orm.Model(&models.ApiGroup{})
+	dbModels := db.Orm.Model(&models.ApiGroup{})
 
 	if apiGroup.Id != 0 {
-		db = db.Where("id = ?", apiGroup.Id)
+		dbModels = dbModels.Where("id = ?", apiGroup.Id)
 	} else {
-		err = conn.Orm.Model(&models.ApiGroup{}).
+		err = db.Orm.Model(&models.ApiGroup{}).
 			Where(`"name" = ?`, apiGroup.Name).
 			Count(&apiGroupCount).Error
 		if err != nil {
@@ -60,7 +60,7 @@ func SaveApiGroup(c *gin.Context) {
 		}
 	}
 
-	err = db.Save(&apiGroup).Error
+	err = dbModels.Save(&apiGroup).Error
 	if err != nil {
 		response.Error(c, err, response.SaveApiGroupError)
 		return
@@ -79,7 +79,7 @@ func DeleteApiGroup(c *gin.Context) {
 
 	apiGroupId = c.Param("id")
 
-	err = conn.Orm.Model(&models.Api{}).Where(`"group" = ?`, apiGroupId).Count(&apiCount).Error
+	err = db.Orm.Model(&models.Api{}).Where(`"group" = ?`, apiGroupId).Count(&apiCount).Error
 	if err != nil {
 		response.Error(c, err, response.GetApiError)
 		return
@@ -89,7 +89,7 @@ func DeleteApiGroup(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Delete(&models.ApiGroup{}, apiGroupId).Error
+	err = db.Orm.Delete(&models.ApiGroup{}, apiGroupId).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteApiGroupError)
 		return

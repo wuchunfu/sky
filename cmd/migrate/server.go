@@ -2,7 +2,7 @@ package migrate
 
 import (
 	"fmt"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/logger"
 
 	"github.com/spf13/cobra"
@@ -43,7 +43,7 @@ func setup() {
 	logger.Setup()
 
 	// 数据库配置
-	conn.Setup()
+	db.Setup()
 }
 
 func run() (err error) {

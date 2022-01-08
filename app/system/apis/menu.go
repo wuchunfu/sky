@@ -2,7 +2,7 @@ package apis
 
 import (
 	"sky/app/system/models"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/tools/response"
 	"strconv"
 
@@ -19,7 +19,7 @@ func MenuTree(c *gin.Context) {
 		buttonList []*models.Menu
 	)
 
-	err = conn.Orm.Model(&models.Menu{}).
+	err = db.Orm.Model(&models.Menu{}).
 		Where("type in (1, 2)").
 		Order("sort, id").
 		Find(&menus).Error
@@ -32,7 +32,7 @@ func MenuTree(c *gin.Context) {
 	result = m.GetMenuTree()
 
 	// 查询所有页面对应的按钮列表
-	err = conn.Orm.Model(&models.Menu{}).
+	err = db.Orm.Model(&models.Menu{}).
 		Where("type = 3").
 		Order("sort, id").
 		Find(&buttonList).Error
@@ -69,7 +69,7 @@ func SaveMenu(c *gin.Context) {
 		return
 	}
 
-	db := conn.Orm.Model(&models.Menu{})
+	db := db.Orm.Model(&models.Menu{})
 
 	if menu.Id != 0 {
 		db = db.Where("id = ?", menu.Id)
@@ -95,7 +95,7 @@ func DeleteMenu(c *gin.Context) {
 	menuId = c.Param("id")
 
 	// 确认是否有菜单节点，若有，则不允许删除
-	err = conn.Orm.Model(&models.Menu{}).Where("parent = ?", menuId).Count(&menuCount).Error
+	err = db.Orm.Model(&models.Menu{}).Where("parent = ?", menuId).Count(&menuCount).Error
 	if err != nil {
 		response.Error(c, err, response.GetMenuError)
 		return
@@ -106,7 +106,7 @@ func DeleteMenu(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Delete(&models.Menu{}, menuId).Error
+	err = db.Orm.Delete(&models.Menu{}, menuId).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteMenuError)
 		return
@@ -132,7 +132,7 @@ func BatchDeleteMenu(c *gin.Context) {
 	}
 
 	// 确认是否存在子节点
-	err = conn.Orm.Model(&models.Menu{}).Where("parent in (?)", menuIds.MenuIds).Count(&menuCount).Error
+	err = db.Orm.Model(&models.Menu{}).Where("parent in (?)", menuIds.MenuIds).Count(&menuCount).Error
 	if err != nil {
 		response.Error(c, err, response.GetMenuError)
 		return
@@ -142,7 +142,7 @@ func BatchDeleteMenu(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Delete(&models.Menu{}, menuIds.MenuIds).Error
+	err = db.Orm.Delete(&models.Menu{}, menuIds.MenuIds).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteMenuError)
 		return
@@ -161,7 +161,7 @@ func MenuButton(c *gin.Context) {
 
 	menuId = c.Param("id")
 
-	err = conn.Orm.Model(&models.Menu{}).
+	err = db.Orm.Model(&models.Menu{}).
 		Where("parent = ?", menuId).
 		Order("sort, id").
 		Find(&buttonList).Error
@@ -197,7 +197,7 @@ func MenuBindApi(c *gin.Context) {
 	}
 
 	if params.Type == 1 {
-		err = conn.Orm.Model(&models.MenuApi{}).Where("menu = ? and api in (?)", menuIdInt, params.Apis).Pluck("api", &existApis).Error
+		err = db.Orm.Model(&models.MenuApi{}).Where("menu = ? and api in (?)", menuIdInt, params.Apis).Pluck("api", &existApis).Error
 		if err != nil {
 			response.Error(c, err, response.GetMenuApiError)
 			return
@@ -220,14 +220,14 @@ func MenuBindApi(c *gin.Context) {
 		}
 
 		if len(menuApi) > 0 {
-			err = conn.Orm.Create(&menuApi).Error
+			err = db.Orm.Create(&menuApi).Error
 			if err != nil {
 				response.Error(c, err, response.MenuBindApiError)
 				return
 			}
 		}
 	} else if params.Type == 0 {
-		err = conn.Orm.Where("menu = ? and api in (?)", menuIdInt, params.Apis).Delete(&models.MenuApi{}).Error
+		err = db.Orm.Where("menu = ? and api in (?)", menuIdInt, params.Apis).Delete(&models.MenuApi{}).Error
 		if err != nil {
 			response.Error(c, err, response.MenuUnBindApiError)
 			return
@@ -247,7 +247,7 @@ func MenuApis(c *gin.Context) {
 
 	menuId = c.Param("id")
 
-	err = conn.Orm.Model(&models.MenuApi{}).Select("distinct api").Where("menu = ?", menuId).Pluck("api", &apiList).Error
+	err = db.Orm.Model(&models.MenuApi{}).Select("distinct api").Where("menu = ?", menuId).Pluck("api", &apiList).Error
 	if err != nil {
 		response.Error(c, err, response.GetMenuApiError)
 		return
@@ -267,7 +267,7 @@ func MenuApiList(c *gin.Context) {
 
 	menuId = c.Param("id")
 
-	err = conn.Orm.Model(&models.MenuApi{}).
+	err = db.Orm.Model(&models.MenuApi{}).
 		Select("distinct api").
 		Where("menu = ?", menuId).
 		Pluck("api", &apiIds).Error
@@ -276,7 +276,7 @@ func MenuApiList(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Model(&models.Api{}).Where("id in (?)", apiIds).Find(&apiList).Error
+	err = db.Orm.Model(&models.Api{}).Where("id in (?)", apiIds).Find(&apiList).Error
 	if err != nil {
 		response.Error(c, err, response.GetMenuApiError)
 		return

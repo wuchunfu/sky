@@ -2,7 +2,7 @@ package permission
 
 import (
 	"fmt"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/logger"
 	"sky/pkg/tools/response"
 	"time"
@@ -20,7 +20,7 @@ func CasbinSetup() *casbin.SyncedEnforcer {
 		err     error
 		adapter *gormAdapter.Adapter
 	)
-	adapter, err = gormAdapter.NewAdapterByDBWithCustomTable(conn.Orm, nil, viper.GetString("casbin.tableName"))
+	adapter, err = gormAdapter.NewAdapterByDBWithCustomTable(db.Orm, nil, viper.GetString("casbin.tableName"))
 	if err != nil {
 		logger.Fatal("创建 casbin gorm adapter 失败，错误：%v", err)
 	}

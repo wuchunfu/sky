@@ -3,7 +3,7 @@ package apis
 import (
 	"fmt"
 	"sky/app/system/models"
-	"sky/pkg/conn"
+	"sky/pkg/db"
 	"sky/pkg/pagination"
 	"sky/pkg/tools/response"
 
@@ -18,7 +18,7 @@ func ApiList(c *gin.Context) {
 		result  interface{}
 	)
 
-	db := conn.Orm.Model(&models.Api{})
+	db := db.Orm.Model(&models.Api{})
 
 	title := c.DefaultQuery("title", "")
 	if title != "" {
@@ -54,7 +54,7 @@ func SaveApi(c *gin.Context) {
 		return
 	}
 
-	db := conn.Orm.Model(&models.Api{})
+	db := db.Orm.Model(&models.Api{})
 
 	if api.Id != 0 {
 		db = db.Where("id = ?", api.Id)
@@ -80,7 +80,7 @@ func DeleteApi(c *gin.Context) {
 	apiId = c.Param("id")
 
 	// 查询是否有菜单绑定了接口
-	err = conn.Orm.Model(&models.MenuApi{}).Where("api = ?", apiId).Count(&meunApiCount).Error
+	err = db.Orm.Model(&models.MenuApi{}).Where("api = ?", apiId).Count(&meunApiCount).Error
 	if err != nil {
 		response.Error(c, nil, response.GetApiMenuError)
 		return
@@ -91,7 +91,7 @@ func DeleteApi(c *gin.Context) {
 		return
 	}
 
-	err = conn.Orm.Delete(&models.Api{}, apiId).Error
+	err = db.Orm.Delete(&models.Api{}, apiId).Error
 	if err != nil {
 		response.Error(c, err, response.DeleteApiError)
 		return

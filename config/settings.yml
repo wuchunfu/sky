@@ -16,6 +16,7 @@ log:
   compress: 1
   path: log/sky.log
 db:
+  type: postgres
   dsn: host=localhost user=postgres password=123456 dbname=sky port=5432 sslmode=disable TimeZone=Asia/Shanghai
   maxOpenConn: 20000
   maxIdleConn: 0
