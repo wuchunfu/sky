@@ -36,5 +36,5 @@ func Setup(g *gin.Engine) {
 	g.Use(cors.New(config))
 
 	// 路由版本
-	v1.RegisterRouter(g.Group("/sky/api/v1"))
+	v1.RegisterRouter(g.Group("/api/v1"))
 }
