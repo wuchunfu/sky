@@ -20,7 +20,7 @@ func Setup() {
 		err   error
 		sqlDB *sql.DB
 	)
-	sqlDB, err = sql.Open("postgres", viper.GetString("db.dsn"))
+	sqlDB, err = sql.Open(viper.GetString("db.type"), viper.GetString("db.dsn"))
 	if err != nil {
 		logger.Fatalf("数据库连接失败，错误: %v", err)
 	}

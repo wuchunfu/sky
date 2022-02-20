@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	v1 "sky/common/router/v1"
 	"sky/pkg/logger"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 加载路由
+// Setup 加载路由
 func Setup(g *gin.Engine) {
 	// 使用zap接收gin框架默认的日志并配置
 	g.Use(logger.GinLogger(), logger.GinRecovery(true))
@@ -35,11 +36,5 @@ func Setup(g *gin.Engine) {
 	g.Use(cors.New(config))
 
 	// 路由版本
-	routerVersion := g.Group("/api/v1")
-
-	// 注册公共接口路由，非业务相关路由
-	registerPublicRouter(routerVersion)
-
-	// 注册系统管理路由
-	registerSystemRouter(routerVersion)
+	v1.RegisterRouter(g.Group("/api/v1"))
 }

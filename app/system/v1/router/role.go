@@ -1,7 +1,7 @@
 package router
 
 import (
-	"sky/app/system/apis"
+	"sky/app/system/v1/apis"
 
 	"github.com/gin-gonic/gin"
 )
