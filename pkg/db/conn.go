@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"sky/pkg/logger"
 	"time"
 
@@ -51,8 +50,6 @@ func getDBDriver(sqlDB *sql.DB) (err error) {
 	var (
 		gormDialector gorm.Dialector
 	)
-
-	fmt.Println(viper.GetString("db.type") == "mysql")
 
 	if viper.GetString("db.type") == "mysql" {
 		gormDialector = mysql.New(mysql.Config{
