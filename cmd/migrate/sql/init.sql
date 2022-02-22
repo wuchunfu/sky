@@ -2,6 +2,8 @@ BEGIN;
 -- 用户
 INSERT INTO system_user (username, password, nickname, tel, email, sex, status, is_admin, remark, create_time, update_time) VALUES ('lanyulei', '$2a$10$7AkPs/BP4h3JQiK0K2vPLeh/qa.soqsiCllhjwvHYkfEnHo./kQo6', '兰玉磊', '', 'lanyulei@fdevops.com', 0, true, true, '', now(), now());
 
+SELECT setval('system_user_id_seq', (SELECT MAX(id) FROM system_user));
+
 -- 菜单
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/home', 'Home', 'home/index', '', '首页', '', false, true, true, false, '{home}', 'HomeFilled', 0, 2, 0, 1, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/system', 'System', 'layout/routerView/parent', '', '系统设置', '', false, true, false, false, '{system}', 'Setting', 0, 1, 2, 2, now(), now());
@@ -36,9 +38,15 @@ INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_h
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('', '', '', '', '接口权限管理', '', false, false, false, false, '{system:role-permission-api:manager}', '', 7, 3, 0, 31, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/system/login-log', 'SystemLoginLog', 'system/loginLog/index', '', '登陆日志', '', false, true, false, false, '{system:loginLog}', 'TrendCharts', 2, 2, 20, 32, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('', '', '', '', '删除登陆日志', '', false, false, false, false, '{system:loginLog:delete}', '', 34, 3, 0, 33, now(), now());
+INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/tools', 'ComponentTools', 'layout/routerView/parent', '', '组件工具', '', false, false, false, false, '{component:tools}', 'Tools', 0, 1, 1, 34, now(), now());
+INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/tools/form', 'ComponentToolsForm', 'tools/formGenerator/index', '', '表单设计', '', false, true, false, false, '{tools:form:index}', 'Document', 34, 2, 1, 35, now(), now());
+
+SELECT setval('system_menu_id_seq', (SELECT MAX(id) FROM system_menu));
 
 -- API分组
 INSERT INTO system_api_group (name, remark, create_time, update_time) VALUES ('系统管理', '', '2021-09-05 10:25:43.667889 +00:00', '2021-09-05 10:49:02.592078 +00:00');
+
+SELECT setval('system_api_group_id_seq', (SELECT MAX(id) FROM system_api_group));
 
 -- API接口
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('获取用户列表', '/api/v1/system/user', 'GET', 1, '', now(), now());
@@ -70,6 +78,8 @@ INSERT INTO system_api (title, url, method, "group", remark, create_time, update
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('删除接口分组', '/api/v1/system/api-group/:id', 'DELETE', 1, '', now(), now());
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('获取登陆日志列表', '/api/v1/system/login-log', 'GET', 1, '', now(), now());
 INSERT INTO system_api (title, url, method, "group", remark, create_time, update_time) VALUES ('删除登陆日志', '/api/v1/system/login-log/:id', 'DELETE', 1, '', now(), now());
+
+SELECT setval('system_api_id_seq', (SELECT MAX(id) FROM system_api));
 
 -- 菜单与接口的关联
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (4, 6, now(), now());
@@ -105,6 +115,8 @@ INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (7, 20,
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (7, 21, now(), now());
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (34, 35, now(), now());
 INSERT INTO system_menu_api (menu, api, create_time, update_time) VALUES (34, 34, now(), now());
+
+SELECT setval('system_menu_api_id_seq', (SELECT MAX(id) FROM system_menu_api));
 
 COMMIT;
 -- 执行结束
