@@ -40,7 +40,6 @@ INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_h
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('', '', '', '', '删除登陆日志', '', false, false, false, false, '{system:loginLog:delete}', '', 34, 3, 0, 33, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/tools', 'ComponentTools', 'layout/routerView/parent', '', '组件工具', '', false, false, false, false, '{component:tools}', 'Tools', 0, 1, 1, 34, now(), now());
 INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/tools/form', 'ComponentToolsForm', 'tools/formGenerator/index', '', '表单设计', '', false, true, false, false, '{tools:form:index}', 'Document', 34, 2, 1, 35, now(), now());
-INSERT INTO system_menu (path, name, component, redirect, title, hyperlink, is_hide, is_keep_alive, is_affix, is_iframe, auth, icon, parent, type, sort, id, create_time, update_time) VALUES ('/tools/process', 'ToolsProcess', 'tools/process/index', '', '流程设计', '', false, true, false, false, '{tools:process:index}', 'Crop', 34, 2, 10, 68, now(), now());
 
 SELECT setval('system_menu_id_seq', (SELECT MAX(id) FROM system_menu));
 
